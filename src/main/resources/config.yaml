@@ -1,0 +1,9 @@
+http:
+  host: "localhost"
+  port: "8081"
+db:
+  host: "database-1.ca5yzoeinwgo.us-east-2.rds.amazonaws.com"
+  port: "3306"
+  password: "rootadmin"
+  username: "admin"
+  database: "sample"
