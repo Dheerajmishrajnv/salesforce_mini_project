@@ -8,15 +8,17 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<flow name="dheerajImplFlow" doc:id="9dbe357a-ead8-420a-a408-766df7862ca6" >
-		<salesforce:replay-channel-listener doc:name="Replay channel listener" doc:id="2e19ff5a-e71f-44cf-94c8-f1035e4c7d79" config-ref="Salesforce_Config1" streamingChannel="/data/AbcProduct__ChangeEvent" replayOption="ONLY_NEW" replayId="-1" autoReplay="true"/>
+		<salesforce:replay-channel-listener doc:name="Replay channel listener" doc:id="2e19ff5a-e71f-44cf-94c8-f1035e4c7d79" config-ref="Salesforce_Config1" replayOption="ONLY_NEW" replayId="-1" autoReplay="true" streamingChannel="/data/Product2ChangeEvent"/>
 		<ee:transform doc:name="Transform Message" doc:id="9d8f60a2-faf5-41fa-a20a-522474b1c6f4" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload.data]]></ee:set-payload>
+payload.data.payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="2a514e54-3c5e-44fd-b554-cefd81ee7bcd" message="#[payload]"/>
+		<set-payload value="#[payload.data.payload.changeType]" doc:name="Set Payload" doc:id="c823b380-0115-4c06-96d9-7a341afcff3f" />
 		<logger level="INFO" doc:name="Logger" doc:id="456dc312-48fc-4773-a3ba-f1e75b8f1ac8" message="#[payload]"/>
 	</flow>
 </mule>
