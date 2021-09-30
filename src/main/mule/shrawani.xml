@@ -4,11 +4,8 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6652fcff-fbc7-43df-8298-336773370d34" >
-<<<<<<< HEAD
-		<http:listener-connection host="0.0.0.0" port="8081" />
-=======
-		<http:listener-connection host="0.0.0.0" port="8082" />
->>>>>>> 7b745e0 (shrawani commit)
-	</http:listener-config>
+	<flow name="shrawaniFlow" doc:id="9d000ff7-2bd8-4ed3-9216-c888280091ff" >
+		<http:listener doc:name="Listener" doc:id="9c5a19d3-2417-4a3d-af72-d59d2511566e" config-ref="HTTP_Listener_config" path="/def"/>
+		<set-payload value='#["hello"]' doc:name="Set Payload" doc:id="53dffa30-05e0-48b8-a1d5-dd064166884f" />
+	</flow>
 </mule>
