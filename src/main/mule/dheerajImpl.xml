@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="dheerajImplFlow" doc:id="8757824c-106f-45a2-b56e-17cba89064ba" >
-		<http:listener doc:name="Listener" doc:id="4b0da326-5198-433d-a423-bfa8fd175048" path="/abc" config-ref="HTTP_Listener_config"/>
-		<db:select doc:name="Select" doc:id="de3bd9dd-d1fa-45c5-baea-7dd03f76ccf1" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from student]]></db:sql>
-		</db:select>
-		<ee:transform doc:name="Transform Message" doc:id="fed59bed-179b-407a-9425-ab6895e6f316" >
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="dheerajImplFlow" doc:id="9dbe357a-ead8-420a-a408-766df7862ca6" >
+		<salesforce:replay-channel-listener doc:name="Replay channel listener" doc:id="2e19ff5a-e71f-44cf-94c8-f1035e4c7d79" config-ref="Salesforce_Config1" streamingChannel="/data/AbcProduct__ChangeEvent" replayOption="ONLY_NEW" replayId="-1" autoReplay="true"/>
+		<ee:transform doc:name="Transform Message" doc:id="9d8f60a2-faf5-41fa-a20a-522474b1c6f4" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload.data]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="6f8c64dc-0585-4a6b-9eec-adf0c3be0ed4" />
+		<logger level="INFO" doc:name="Logger" doc:id="456dc312-48fc-4773-a3ba-f1e75b8f1ac8" message="#[payload]"/>
 	</flow>
 </mule>

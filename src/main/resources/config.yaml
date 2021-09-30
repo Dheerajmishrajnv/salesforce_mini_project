@@ -7,3 +7,7 @@ db:
   password: "rootadmin"
   username: "admin"
   database: "sample"
+sfdc:
+  username: "dheeraj.mishra@apisero.com"
+  password: "Apisero@123"
+  token: "kGgQ1ZhwfZ8Ai60qfu68T1oxT"
