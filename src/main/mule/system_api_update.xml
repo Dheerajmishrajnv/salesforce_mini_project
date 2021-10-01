@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="system_api_updateFlow" doc:id="418fdf34-4f2c-4836-a5dd-e9207607e7f3" >
+		<set-variable value="#[payload.data.payload.ChangeEventHeader.changedFields as Array]" doc:name="Set Variable" doc:id="5a1e77fc-2a01-498f-a632-0a84e79b44a6" variableName="changedFields"/>
+		<set-variable value="#[payload.data.payload.ChangeEventHeader.recordIds[0]]" doc:name="Set Variable" doc:id="2228f3d0-1619-45ab-9b82-b64105223da8" variableName="recordID"/>
+		<ee:transform doc:name="Transform Message" doc:id="dbaf417a-0066-4b3b-b4cd-fcf8730e8daa" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var inputArr = {(vars.changedFields map ("$" :payload.data.payload."$"))}
+var fields= inputArr mapObject{"Query" :  $$ as String  ++ " = " ++"'"++ ($ as String replace "'" with ("''"))++"'"}pluck $ joinBy ","
+---
+{
+	"query": "UPDATE product_record " ++ "SET " ++ fields as String ++ " WHERE product_recordID=" ++ "'"++ vars.recordID as String ++ "'"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<try doc:name="Try" doc:id="c4edf59c-3c7a-4f9f-8141-7d64435c0cbc" >
+			<db:update doc:name="Update" doc:id="7a9ce207-1107-4237-a8f3-b6125b0658b3" config-ref="Database_Config">
+			<db:sql><![CDATA[#[payload.query]]]></db:sql>
+		</db:update>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="217d3bd7-7dde-4627-b8c1-624604c2466a" >
+					<logger level="INFO" doc:name="Logger" doc:id="af1a8af9-f07b-4100-a796-394919063e7f" message="Error"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger" doc:id="b12a016a-376e-4036-b2da-a6a836c3d477" />
+	</flow>
+</mule>

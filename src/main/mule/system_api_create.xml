@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="system_api_createFlow" doc:id="cee25872-4c5c-44fc-a333-724b3bc0f5f7" >
+		<set-variable value="#[payload.data.payload.recordIds[1]]" doc:name="Set Variable" doc:id="b1f7b946-9198-4e89-9866-d001e38d71c0" variableName="test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="a77bd7c9-1ec8-4cf1-b2ce-d1c553acb632" message='#[vars.test ++ "This is variable"]'/>
+		<db:insert doc:name="Insert" doc:id="d660d2ff-1fa0-49c2-9420-a63c6c363990" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO product_record (product_recordID,product_name,product_code,product_price,product_quantity,product_desc) VALUES (:id, :name, :code, :price, :quantity, :desc)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"id": payload.data.payload.ChangeEventHeader.recordIds[0],
+	"name": payload.data.payload.Name,
+	"code":	payload.data.payload.ProductCode,
+	"price": payload.data.payload.Price__c,
+	"quantity": payload.data.payload.Quantity__c,
+	"desc": payload.data.payload.Description
+}]]]></db:input-parameters>
+		</db:insert>
+		<logger level="INFO" doc:name="Logger" doc:id="9518f25d-0b1f-4fce-a8a5-5fb3655d1f21" message='#["Inserted"]'/>
+	</flow>
+</mule>

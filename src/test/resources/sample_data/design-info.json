@@ -1,0 +1,35 @@
+{
+  "sampleData": {
+    "9d8f60a2-faf5-41fa-a20a-522474b1c6f4": {
+      "payload": "sample_data/json.json",
+      "vars-sales": "sample_data/json_1.json"
+    },
+    "b3602bd7-2f93-4528-a52b-d3e93970e914": {
+      "payload": "sample_data/json_2.json"
+    },
+    "8f635f22-2e3b-48d3-8706-ae5a4959dfe0": {
+      "payload": "sample_data/json_3.json"
+    },
+    "6950a8c4-827e-4764-a9d5-754f9973e46c": {
+      "payload": "sample_data/product2.dwl"
+    },
+    "98742d01-a173-4173-9762-ff142c25d8ef": {
+      "payload": "sample_data/json.json"
+    },
+    "8c49e8ec-430d-4369-8e77-ee545d6a97e5": {
+      "payload": "sample_data/account.dwl"
+    },
+    "029b6416-72ee-4b0d-b516-9ca6c7e86352": {
+      "payload": "sample_data/Account_1.dwl"
+    },
+    "f2176666-9235-4f4e-8924-28c4a729eb29": {
+      "payload": "sample_data/Account_2.dwl"
+    },
+    "f5e8196c-4b70-414f-a8e2-35850b5c933d": {
+      "payload": "sample_data/json_1.json"
+    },
+    "ef8fc6a7-d4de-4467-83b9-780af35b376b": {
+      "payload": "sample_data/json_2.json"
+    }
+  }
+}
