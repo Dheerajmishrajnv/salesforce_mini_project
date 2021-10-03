@@ -1,0 +1,32 @@
+{
+  "data": {
+    "schema": "bq3TkxqrVQnLlYcCSHiOyg",
+    "payload": {
+      "LastModifiedDate": "2021-10-02T05:17:43.000Z",
+      "ProductCode": "ASDF152",
+      "Name": "BAJAJ",
+      "ChangeEventHeader": {
+        "commitNumber": 270630500616,
+        "commitUser": "0055g00000CEKoQAAX",
+        "sequenceNumber": 1,
+        "entityName": "Product2",
+        "changeType": "UPDATE",
+        "changedFields": [
+          "Name",
+          "ProductCode",
+          "LastModifiedDate"
+        ],
+        "changeOrigin": "com/salesforce/api/soap/52.0;client=SfdcInternalAPI/",
+        "transactionKey": "00069697-e38c-feb6-1d54-bb85318fdf41",
+        "commitTimestamp": 1633151863000,
+        "recordIds": [
+          "01t5g000004pZINAA2"
+        ]
+      }
+    },
+    "event": {
+      "replayId": 755916
+    }
+  },
+  "channel": "/data/Product2ChangeEvent"
+}

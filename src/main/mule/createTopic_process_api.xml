@@ -6,16 +6,19 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="9171ebbf-90bd-4378-a2fd-b55cb596f9e1" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
 	<flow name="createTopicFlow" doc:id="1e8102b4-d256-4095-b16e-d2acca3a4018" >
 		<salesforce:replay-channel-listener replayOption="FROM_REPLAY_ID" doc:name="Replay channel listener" doc:id="3667164d-c824-44ad-a946-6f242b68d6aa" config-ref="Salesforce_Config1" replayId="-1" autoReplay="true" streamingChannel="/data/Product2ChangeEvent"/>
 		<logger level="INFO" doc:name="Logger" doc:id="808aa94d-699a-4f1e-8953-8fc0334164a7" message="#[%dw 2.0&#10;output application/json&#10;---&#10;payload]"/>
 		<set-variable value="#[payload.data.payload.ChangeEventHeader.changeType as String]" doc:name="Set Variable" doc:id="42802740-51fd-435c-ad1c-bf4e9cfd0ab2" variableName="operation"/>
 		<choice doc:name="Choice" doc:id="24cc3f59-b745-4b35-bdf3-34b16d484f0e" >
-			<when expression='#[vars.operation == "CREATE"]'>
-				<flow-ref doc:name="Flow Reference" doc:id="efa39dcb-27e3-4c65-8d20-5aef004056e2" name="system_api_createFlow"/>
-			</when>
 			<when expression='#[vars.operation == "UPDATE"]'>
-				<flow-ref doc:name="Flow Reference" doc:id="2e0f7b83-a04a-44ef-ae44-bc6e8468b151" name="system_api_updateFlow"/>
+				<flow-ref doc:name="Flow Reference" doc:id="2e0f7b83-a04a-44ef-ae44-bc6e8468b151" name="system_api_updateData"/>
+			</when>
+			<when expression='#[vars.operation == "CREATE"]'>
+				<flow-ref doc:name="Flow Reference" doc:id="cf29f3ee-4d22-4dd0-bdc3-0c4093dc46ec" name="system_api_updateData"/>
 			</when>
 			<otherwise >
 				<set-payload value='#["Invalid Operation "]' doc:name="Set Payload" doc:id="69cb0da7-e1bb-446b-bf33-569159d8e1ad" />

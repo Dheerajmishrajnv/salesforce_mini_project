@@ -5,31 +5,21 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="system_api_updateFlow" doc:id="418fdf34-4f2c-4836-a5dd-e9207607e7f3" >
-		<set-variable value="#[payload.data.payload.ChangeEventHeader.changedFields as Array]" doc:name="Set Variable" doc:id="5a1e77fc-2a01-498f-a632-0a84e79b44a6" variableName="changedFields"/>
-		<set-variable value="#[payload.data.payload.ChangeEventHeader.recordIds[0]]" doc:name="Set Variable" doc:id="2228f3d0-1619-45ab-9b82-b64105223da8" variableName="recordID"/>
-		<ee:transform doc:name="Transform Message" doc:id="dbaf417a-0066-4b3b-b4cd-fcf8730e8daa" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
-var inputArr = {(vars.changedFields map ("$" :payload.data.payload."$"))}
-var fields= inputArr mapObject{"Query" :  $$ as String  ++ " = " ++"'"++ ($ as String replace "'" with ("''"))++"'"}pluck $ joinBy ","
----
-{
-	"query": "UPDATE product_record " ++ "SET " ++ fields as String ++ " WHERE product_recordID=" ++ "'"++ vars.recordID as String ++ "'"
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<try doc:name="Try" doc:id="c4edf59c-3c7a-4f9f-8141-7d64435c0cbc" >
-			<db:update doc:name="Update" doc:id="7a9ce207-1107-4237-a8f3-b6125b0658b3" config-ref="Database_Config">
-			<db:sql><![CDATA[#[payload.query]]]></db:sql>
+	<flow name="system_api_updateFlow" doc:id="30a1c21b-5858-437d-a169-0e8d5284a706" >
+		<set-variable value="#[vars.ActualPayload.payload as String]" doc:name="key" doc:id="9d043ddb-823a-4c30-86ba-f5ba4e8e6ec3" variableName="key"/>
+		<logger level="INFO" doc:name="Logger" doc:id="2548126e-74e4-4b95-8aa0-eea159640140" />
+		<set-payload doc:name="Set Payload" doc:id="de1197e3-6f4f-453e-8946-2566c32fbae1" value='#["update product_record set " ++ payload  ++ "=" ++ vars.key ++ " where recordIds = " ++ vars.primary_key as String]'/>
+		<db:update doc:name="Update" doc:id="398d08c4-75c2-4374-9013-abbd1f6c0be4" config-ref="Database_Config">
+			<db:sql ><![CDATA[#[payload]]]></db:sql>
 		</db:update>
-			<error-handler >
-				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="217d3bd7-7dde-4627-b8c1-624604c2466a" >
-					<logger level="INFO" doc:name="Logger" doc:id="af1a8af9-f07b-4100-a796-394919063e7f" message="Error"/>
-				</on-error-continue>
-			</error-handler>
-		</try>
-		<logger level="INFO" doc:name="Logger" doc:id="b12a016a-376e-4036-b2da-a6a836c3d477" />
+	</flow>
+	<flow name="system_api_updateData" doc:id="0a3f3b6a-3be8-4f2f-afbb-87ee18be1cca" >
+		<set-variable value="#[payload.data.payload.ChangeEventHeader.changedFields as Array]" doc:name="fields_array" doc:id="c8a64e2d-8922-4c31-ac27-08881873cf3f" variableName="fields_array"/>
+		<set-variable value="#[payload.data.payload.ChangeEventHeader.recordIds[0]]" doc:name="Set primary_key" doc:id="43f53b27-934a-4ff9-8832-84cedaf8cb8c" variableName="primary_key"/>
+		<set-variable value="#[payload.data.payload as Object]" doc:name="ActualPayload" doc:id="b14bbc41-d5f6-42fa-a185-1ad41ab3ba77" variableName="ActualPayload"/>
+		<foreach doc:name="For Each" doc:id="57699d32-0241-48b6-a3b9-60620c7963ab" collection="#[vars.fields_array]">
+			<logger level="INFO" doc:name="Logger" doc:id="52391e00-9288-4aaa-9fdc-16f3a3a036ee" message="#[payload]"/>
+			<flow-ref doc:name="Flow Reference" doc:id="698b63f5-3e5b-4605-970e-e9c76605b082" name="system_api_updateFlow"/>
+		</foreach>
 	</flow>
 </mule>
