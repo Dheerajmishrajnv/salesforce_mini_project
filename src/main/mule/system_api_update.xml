@@ -7,19 +7,18 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
 	<flow name="system_api_updateData" doc:id="0a3f3b6a-3be8-4f2f-afbb-87ee18be1cca" >
-		<set-variable value="#[payload.data.payload.ChangeEventHeader.changedFields as Array]" doc:name="fields_array" doc:id="c8a64e2d-8922-4c31-ac27-08881873cf3f" variableName="fields_array"/>
+		<set-variable value="#[payload.data.payload.ChangeEventHeader.changedFields]" doc:name="fields_array" doc:id="c8a64e2d-8922-4c31-ac27-08881873cf3f" variableName="fields_array"/>
 		<set-variable value="#[payload.data.payload.ChangeEventHeader.recordIds[0]]" doc:name="Set primary_key" doc:id="43f53b27-934a-4ff9-8832-84cedaf8cb8c" variableName="primary_key"/>
-		<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;payload.data.payload]" doc:name="ActualPayload" doc:id="f87fedbc-be0f-428c-9806-045b5abbaaa6" variableName="ActualPayload"/>
-		<foreach doc:name="For Each" doc:id="57699d32-0241-48b6-a3b9-60620c7963ab" collection="#[vars.fields_array]">
-			<logger level="INFO" doc:name="Logger" doc:id="354c1136-865d-433c-a2a4-2ada8a4293fc" message="#[payload]"/>
-			<logger level="INFO" doc:name="Logger" doc:id="52391e00-9288-4aaa-9fdc-16f3a3a036ee" message="#[vars.ActualPayload]"/>
-			<set-variable value="#[vars.ActualPayload.payload]" doc:name="value" doc:id="fb20db00-a1bc-495f-9b3b-dcd63af65281" variableName="value" />
-			<logger level="INFO" doc:name="Logger" doc:id="384b2f72-ac83-4947-a8ae-08830f8bf0d6" message="#[vars.value]"/>
-			<set-payload doc:name="Set Payload" doc:id="de1197e3-6f4f-453e-8946-2566c32fbae1" value='#["update product_record set " ++ payload as String  ++ "=" ++ vars.value as String ++ " where recordIds = " ++ vars.primary_key as String]' />
-			<logger level="INFO" doc:name="Logger" doc:id="2548126e-74e4-4b95-8aa0-eea159640140" />
+		<set-variable value="#[payload.data.payload]" doc:name="ActualPayload" doc:id="f87fedbc-be0f-428c-9806-045b5abbaaa6" variableName="ActualPayload"/>
+		<set-variable value="#[1 to sizeOf(vars.fields_array)]" doc:name="Number" doc:id="31600887-d0b5-4f0e-9dff-009fc99bb647" variableName="Number"/>
+		<foreach doc:name="For Each" doc:id="57699d32-0241-48b6-a3b9-60620c7963ab" collection="#[vars.Number]">
+			<set-variable value="#[vars.ActualPayload.ChangeEventHeader.changedFields[payload-1]]" doc:name="value" doc:id="fb20db00-a1bc-495f-9b3b-dcd63af65281" variableName="value" />
+			<set-variable value='#[vars.ActualPayload."$(vars.value)"]' doc:name="ActualValue" doc:id="501da07f-56c0-4df7-98c8-d9b50c13cefc" variableName="ActualValue"/>
+			<set-payload doc:name="Set Payload" doc:id="de1197e3-6f4f-453e-8946-2566c32fbae1" value="#[&quot;update product_record set &quot; ++  vars.value as String  ++ &quot;=&quot; ++ &quot;'&quot; ++ vars.ActualValue as String ++ &quot;'&quot; ++ &quot; where recordIds = &quot; ++ &quot;'&quot; ++ vars.primary_key ++ &quot;'&quot;]" />
 			<db:update doc:name="Update" doc:id="398d08c4-75c2-4374-9013-abbd1f6c0be4" config-ref="Database_Config">
 			<db:sql><![CDATA[#[payload]]]></db:sql>
 		</db:update>
+			<logger level="INFO" doc:name="Logger" doc:id="4b9b4262-92e2-4724-a241-af6db057b80c" message="Updated into the table"/>
 		</foreach>
 	</flow>
 </mule>

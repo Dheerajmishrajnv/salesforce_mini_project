@@ -8,7 +8,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="system_api_createFlow" doc:id="cee25872-4c5c-44fc-a333-724b3bc0f5f7" >
 		<db:insert doc:name="Insert" doc:id="d660d2ff-1fa0-49c2-9420-a63c6c363990" config-ref="Database_Config">
-			<db:sql ><![CDATA[INSERT INTO product_record (recordIds,Name,Description,ProductCode,Price_c,Quantity_c,LastModifiedDate) VALUES (:id, :name, :desc, :code, :price, :quantity, :modified)]]></db:sql>
+			<db:sql ><![CDATA[INSERT INTO product_record (recordIds,Name,Description,ProductCode,Price__c,Quantity__c,LastModifiedDate) VALUES (:id, :name, :desc, :code, :price, :quantity, :modified)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{
 	"id": payload.data.payload.ChangeEventHeader.recordIds[0],
 	"name": payload.data.payload.Name,
@@ -19,6 +19,6 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	"modified": payload.data.payload.LastModifiedDate as String as String {format: "uuuu-MM-dd"}
 }]]]></db:input-parameters>
 		</db:insert>
-		<logger level="INFO" doc:name="Logger" doc:id="9518f25d-0b1f-4fce-a8a5-5fb3655d1f21" message='#["Inserted"]'/>
+		<logger level="INFO" doc:name="Logger" doc:id="9518f25d-0b1f-4fce-a8a5-5fb3655d1f21" message='#["Inserted successfully"]'/>
 	</flow>
 </mule>
